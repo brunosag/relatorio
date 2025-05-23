@@ -1,0 +1,148 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{lmodern}
+\usepackage[usenames,dvipsnames]{xcolor}
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{parskip}
+\usepackage{classicthesis}
+\usepackage{amsmath}
+
+\graphicspath{{./gfx/}}
+
+\title{Mapeamento da Cobertura Hospitalar no Brasil para Doenças Tempo-Sensíveis}
+\author{
+    Bruno Samuel Ardenghi Gonçalves \\
+    \textit{Orientador:} Márcio Dorn
+}
+\date{\normalsize Maio de 2025}
+
+\definecolor{light-gray}{gray}{0.95}
+\setlength{\fboxsep}{0pt}
+
+\newcommand{\image}[2]{
+    \begin{figure}[H]
+        \fcolorbox{light-gray}{white}{\includegraphics[width=\linewidth]{#1}}
+        \caption{#2}
+    \end{figure}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Introdução}
+
+\par O \textit{MapStroke} é uma plataforma desenvolvida para identificar com precisão regiões com carência de atendimento médico emergencial para Acidente Vascular Cerebral (AVC). O objetivo primordial do projeto é facilitar o planejamento e a inclusão de novos centros de atendimento para esta e outras doenças tempo-sensíveis de forma eficiente, otimizando a alocação de recursos e, consequentemente, maximizando o impacto positivo na saúde da população.
+
+A plataforma consiste em uma aplicação web com interface moderna e intuitiva, projetada para fácil utilização em diversos dispositivos (responsiva). O front-end foi desenvolvido utilizando o framework \textit{SvelteKit v2}, com \textit{TypeScript} para garantir tipagem segura do código, \textit{Tailwind CSS v4} para a estilização dos componentes visuais, e a biblioteca \textit{Leaflet} para a exibição de mapas interativos, cujos dados geográficos são fornecidos pelo \textit{MapTiler}. O desenvolvimento do back-end e a pesquisa subjacente são conduzidos em paralelo por outros membros do SBCB Lab, com alinhamentos estratégicos realizados em reuniões semanais.
+
+\section{Página principal}
+
+Ao acessar a plataforma, o usuário é recepcionado pela página principal. Esta é composta por um mapa interativo que ocupa toda a tela (com a interação inicialmente desativada), um menu de navegação no topo da página e um botão de busca posicionado à esquerda.
+
+\subsection{Busca de isócronas}
+
+Ao acionar o botão dedicado, uma janela para busca de isócronas é exibida. Através desta interface, o usuário pode selecionar uma entre as localizações geográficas disponíveis (atualmente abrangendo 9 países) e refinar a busca por país, estado, cidade ou hospital específico. A busca é hierárquica: o resultado para um país incluirá todos os dados de seus respectivos estados, e assim sucessivamente. Adicionalmente, é possível definir o alcance da cobertura dos hospitais, medido em minutos de tempo de deslocamento por via terrestre, com opções de 45, 60 ou 120 minutos.
+
+\image{01.png}{Mapa interativo e janela de busca de isócronas}
+
+\subsection{Resultado da busca}
+
+Como resultado da consulta, todos os hospitais na localização escolhida, aptos a prover o atendimento necessário, são demarcados no mapa. O servidor, então, processa a união das áreas alcançáveis por estrada a partir desses hospitais, dentro do intervalo de tempo selecionado, gerando polígonos conhecidos como isócronas. Estes polígonos são, por fim, renderizados no mapa pela aplicação. O usuário tem a opção de ocultar as isócronas e os marcadores dos hospitais através de botões de controle localizados à direita da interface.
+
+Neste ponto, o usuário pode navegar livremente pelo mapa dentro da área de interesse definida pela busca. Além dos marcadores e das isócronas, é exibida uma janela de estatísticas no canto inferior direito. Esta janela informa o número de hospitais, a área total e a população coberta dentro da zona de interesse, apresentando tanto valores absolutos quanto relativos. Ao clicar em um marcador de hospital específico, é possível consultar as estatísticas de cobertura individuais, bem como seu nome e um link para visualizá-lo no \textit{Google Maps}.
+
+\image{02.png}{Resultado da busca de isócronas com estatísticas de cobertura}
+
+\section{Autenticação}
+
+A plataforma MapStroke dispõe de um sistema de autenticação baseado em solicitações de acesso. Ao clicar em \textit{Login} no menu de navegação, o usuário é redirecionado para a página de autenticação. Clicando em \textit{Sign up}, é apresentado o formulário de registro. Para criar uma conta, além de e-mail e senha, são solicitados: nome completo, telefone, instituição em que atua, cargo ocupado, uma breve justificativa para o pedido de acesso e, opcionalmente, país, estado e cidade de atuação. Após a submissão do formulário, o usuário é informado que seu pedido foi enviado e encontra-se sob avaliação pela administração da plataforma.
+
+Após a aprovação por um administrador, o acesso à conta pode ser realizado na página de \textit{Login}. Nesta mesma página, é possível solicitar a redefinição de senha clicando em \textit{Forgot password?} e inserindo o e-mail associado à conta. Um e-mail contendo um link para a página de definição de nova senha será enviado. Este link inclui um token de segurança (validado como parâmetro na URL) que autoriza a alteração.
+
+Uma vez autenticado, o usuário atualmente recebe acesso de administrador a todas as funcionalidades da plataforma. Este é um comportamento temporário, visto que o sistema granular de permissões de usuário está em fase de desenvolvimento.
+
+\image{03.png}{Formulário de registro para solicitação de acesso}
+
+\section{Página Sobre}
+
+A página \textit{About} (Sobre) é, inicialmente, uma página estática que fornece uma breve introdução ao projeto, seus objetivos e os desenvolvedores envolvidos. Um usuário com privilégios de administrador, no entanto, tem acesso a um botão \textit{Edit}, que ativa o modo de edição de conteúdo. Neste modo, é possível atualizar integralmente o conteúdo da página utilizando uma interface de visualização dividida: à esquerda, um editor de texto que suporta a linguagem \textit{Markdown}; à direita, a pré-visualização do conteúdo renderizado, atualizada em tempo real. Para confirmar as alterações, clica-se em \textit{Save}, e para descartá-las, em \textit{Cancel}.
+
+\image{04.png}{Interface de edição da página \textit{About} com editor Markdown}
+
+\section{Página de administração}
+
+Usuários com perfil de administrador têm acesso a uma página adicional denominada \textit{Admin}. Esta página centraliza subpáginas para o gerenciamento de diferentes aspectos da plataforma: hospitais, usuários, solicitações de acesso e permissões (roles).
+
+\subsection{Gerenciamento de hospitais}
+
+\subsubsection{Lista de hospitais}
+
+Na aba de hospitais, são exibidos todos os hospitais cadastrados na base de dados em uma lista com carregamento dinâmico (sob demanda). Cada entrada da lista apresenta o nome do hospital, sua cidade, estado e país. É possível também realizar buscas textuais por hospitais, filtrando por nome ou localização.
+
+\image{05.png}{Página de gerenciamento de hospitais com lista e busca}
+
+\subsubsection{Criação de hospital}
+
+O botão \textit{Add Hospital} aciona uma janela modal onde é possível adicionar um novo hospital à base de dados. São requisitados: nome, país, estado, cidade, latitude e longitude. Os campos de localização em toda a aplicação utilizam componentes \textit{combobox} customizados – caixas de seleção que oferecem opções predeterminadas e um campo de busca interno. As opções de estado são dinamicamente filtradas de acordo com o país selecionado, e as cidades, de acordo com o estado.
+
+Qualquer alteração nos campos de localização ou coordenadas é refletida em tempo real no mini-mapa interativo à direita do formulário, que automaticamente centraliza a área selecionada. O mapa pode ser navegado livremente e possui um marcador deslocável; ao ser arrastado, o marcador atualiza as coordenadas no formulário.
+
+Confirmada a criação do hospital, uma nova entrada é adicionada à lista. Neste momento, o servidor inicia o cálculo das isócronas para o novo hospital.
+
+\image{06.png}{Janela de criação de novo hospital com mapa interativo}
+
+\subsubsection{Página individual do hospital}
+
+Todo hospital cadastrado possui uma página própria, acessível ao clicar em seu respectivo item na lista de gerenciamento. Nesta página, à esquerda, são exibidas todas as informações do hospital, como nome, localização e coordenadas.
+
+À direita, um mapa (com navegação desativada) exibe a localização do hospital juntamente com a isócrona calculada a partir deste ponto. O usuário pode alternar entre diferentes alcances de isócronas (por exemplo, 45, 60, 120 minutos), de forma similar à funcionalidade da página principal, através de botões no canto superior direito do mapa. Clicando no marcador do hospital, é possível consultar suas estatísticas de cobertura.
+
+Nesta página, um botão \textit{Edit} permite a alteração de qualquer informação do hospital. A edição é realizada em uma janela idêntica à de criação, pré-preenchida com os dados atuais, com a adição de um botão \textit{Delete} para a exclusão do hospital. Caso a localização ou as coordenadas sejam modificadas, as isócronas são recalculadas pelo servidor.
+
+\image{07.png}{Página de visualização e edição de um hospital específico}
+
+\subsection{Gerenciamento de pedidos de acesso}
+
+Na aba \textit{Requests} da página de administração, são listadas todas as solicitações de acesso pendentes de avaliação. Cada item exibe o nome completo do solicitante, sua instituição, cargo e o tempo decorrido desde a submissão do pedido. Ao expandir o elemento com um clique, é possível visualizar também a localização informada e a justificativa para o acesso.
+
+Um administrador pode aprovar ou rejeitar os pedidos através dos botões correspondentes localizados à direita de cada item. Caso aprovado, um novo usuário é criado e passa a ser listado na aba \textit{Users}. Se rejeitado, o pedido é apenas removido da lista.
+
+\image{08.png}{Página de gerenciamento de solicitações de acesso}
+
+\subsection{Gerenciamento de permissões}
+
+\subsubsection{Lista de papéis}
+
+Na última aba da área administrativa, encontram-se os \textit{Roles} (Papéis). Estes representam conjuntos de permissões que podem ser atribuídos a usuários, permitindo definir diferentes níveis de acesso e controle sobre as funcionalidades da plataforma. Cada item da lista exibe o nome e uma breve descrição do papel.
+
+\subsubsection{Criação de papel}
+
+O botão \textit{Create Role} abre uma janela de diálogo similar à de criação de hospital, contudo, contendo apenas campos para nome e descrição do papel. Após o preenchimento, um novo papel é criado, inicialmente sem nenhuma permissão associada. A configuração detalhada das permissões é realizada na página individual do papel.
+
+\image{09.png}{Página de gerenciamento de papéis}
+
+\subsubsection{Página individual do papel}
+
+Assim como os hospitais, cada papel possui uma página dedicada onde suas permissões podem ser editadas. Uma permissão é definida pela combinação de um \textit{recurso} (ex: papéis, usuários, hospitais, localizações, isócronas, páginas) e uma \textit{ação} (ex: leitura, criação, edição, exclusão).
+
+Na página de edição do papel, as permissões são organizadas em uma estrutura similar a uma tabela: cada linha representa um recurso e cada coluna, uma ação. As células da tabela são botões que podem ser ativados (indicando permissão concedida, na cor vermelha) ou desativados (permissão negada, na cor cinza). Esta configuração determina se um usuário com este papel poderá realizar a ação especificada sobre o recurso correspondente. Por exemplo, ao desativar a ação \textit{CREATE} para o recurso \textit{hospitals}, o botão \textit{Add Hospital} na página de gerenciamento de hospitais será desabilitado para usuários com esse papel.
+
+As alterações nas permissões são salvas através do botão \textit{Save}, que se torna ativo apenas quando modificações pendentes existem. Um ícone de lápis ao lado do nome do papel permite a edição de seu nome e descrição, em uma interface idêntica à de criação, com a adição de um botão \textit{Delete} para excluir o papel.
+
+Conforme mencionado anteriormente, o sistema de permissões é uma funcionalidade recente e encontra-se em desenvolvimento ativo. Atualmente, os papéis podem ser definidos e modificados, mas sua aplicação efetiva no controle de acesso dos usuários ainda será implementada.
+
+\image{10.png}{Página de edição de permissões de um papel}
+
+\section{Conclusão}
+
+Conforme detalhado neste relatório, foram implementadas ao MapStroke as funcionalidades centrais de visualização e busca de cobertura hospitalar por isócronas, um sistema de autenticação, e uma completa suíte de ferramentas administrativas para o gerenciamento de hospitais, solicitações de acesso e a estrutura inicial de papéis de usuário. Este progresso estabelece uma base sólida para a plataforma, demonstrando sua capacidade de atender às necessidades iniciais de mapeamento e análise de serviços de saúde tempo-sensíveis.
+
+Para as próximas fases, o foco será direcionado à expansão das capacidades analíticas e à flexibilização da plataforma. Planeja-se desenvolver mecanismos para a identificação automatizada de áreas prioritárias para intervenção, o que será crucial para o auxílio na tomada de decisões estratégicas em saúde pública. Paralelamente, a plataforma será aprimorada para permitir a personalização dos parâmetros de análise, visando atender a diferentes patologias tempo-sensíveis, e enriquecida com a incorporação de dados socioeconômicos e epidemiológicos para uma análise mais contextualizada e profunda. Finalmente, será concluído o desenvolvimento do sistema de permissões, com a adição de escopo de acesso baseado em localização, tornando o MapStroke adaptável a diferentes cenários de uso por gestores regionais ou instituições específicas, e adequando-o a casos de uso mais pontuais e seguros.
+
+\end{document}
