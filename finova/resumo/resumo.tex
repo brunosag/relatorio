@@ -1,0 +1,79 @@
+\documentclass[12pt]{article}
+
+\usepackage[portuguese]{babel}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{parskip}
+\usepackage{url}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{classicthesis}
+
+\geometry{
+    left=112pt,
+    right=112pt,
+    bottom=72pt,
+    top=72pt
+}
+
+\graphicspath{{./gfx/}}
+
+\pagestyle{empty}
+
+\title{
+    \vspace*{-48pt}
+    \spacedlowsmallcaps{\normalsize Resumo de Atividades} \\[4pt]
+    \LARGE Mapeamento da Cobertura Hospitalar no Brasil para Doenças Tempo-Sensíveis
+}
+\author{
+    \textit{Bolsista:} Bruno Samuel Ardenghi Gonçalves \\
+    \textit{Orientador:} Prof. Dr. Márcio Dorn
+}
+\date{\normalsize Junho de 2025}
+
+\begin{document}
+
+\begin{figure}
+    \vspace*{-36pt}
+    \centering
+    \includegraphics[width=48pt]{ufrgs-sedetec.pdf}
+\end{figure}
+
+\maketitle
+\thispagestyle{empty}
+
+\setstretch{1.05}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{02.png}
+\end{figure}
+
+\section*{Introdução}
+
+O \textit{MapStroke} (\href{https://sbcb.inf.ufrgs.br/mapstroke}{sbcb.inf.ufrgs.br/mapstroke}) é uma plataforma web criada para combater a desigualdade no acesso ao tratamento de Acidente Vascular Cerebral (AVC). A ferramenta auxilia gestores de saúde a identificar áreas carentes e alocar recursos de forma otimizada na instalação de novos centros de atendimento para doenças tempo-sensíveis.
+
+A aplicação utiliza uma interface moderna e fluida, desenvolvida com \textit{SvelteKit}, \textit{TypeScript} e \textit{Tailwind CSS}, e emprega a biblioteca \textit{Leaflet} para a renderização de mapas interativos.
+
+\section*{Funcionalidades Principais}
+
+A funcionalidade central da plataforma é a ferramenta de visualização de cobertura por isócronas, que permite analisar a assistência hospitalar de uma região. Nela, o usuário define uma localização (país, estado, cidade ou hospital) e um tempo de deslocamento para que o sistema exiba no mapa os hospitais e a área total alcançável, juntamente com estatísticas de população e área coberta.
+
+O acesso além dessa página é controlado por um sistema de solicitações. Interessados submetem um pedido de registro com dados profissionais que é avaliado por um administrador. Uma vez aprovado, o usuário obtém acesso às funcionalidades do papel a ele atribuído.
+
+\section*{Painel Administrativo}
+
+O painel administrativo centraliza um conjunto de ferramentas para a gestão da plataforma. A principal delas é o gerenciamento completo da base de hospitais. Ao criar um hospital ou modificar um existente (assistido de um mapa interativo), a isócrona correspondente à localização escolhida é imediatamente calculada e integrada à base de dados.
+
+O painel também permite a aprovação ou rejeição de pedidos de acesso de usuários. Complementarmente, foi implementada a estrutura de um sistema de permissões baseado em papéis, que permitirá a configuração granular do que cada tipo de usuário pode fazer.
+
+Por fim, a área administrativa permite a edição do conteúdo da página "Sobre" através de um editor Markdown com pré-visualização em tempo real.
+
+\section*{Conclusão e Próximos Passos}
+
+A plataforma MapStroke já possui suas funcionalidades centrais implementadas, incluindo a visualização de isócronas, um sistema de autenticação e um painel de administração robusto, estabelecendo uma base sólida para o projeto.
+
+Os próximos passos do desenvolvimento se concentrarão em três frentes principais: o desenvolvimento de ferramentas analíticas para identificar automaticamente áreas críticas que necessitam de intervenção; a flexibilização da plataforma para permitir a análise de outras doenças e a incorporação de dados socioeconômicos; e a finalização do sistema de permissões, incluindo escopo de acesso por localização para adequar a plataforma a diferentes cenários de uso.
+
+\end{document}
